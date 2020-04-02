@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: EC2 para prueba de parametros.
+Metadata:
+  Instances:
+    Description: Esta es una instancia para pruebas y es gratis # Information about the instances
+ 
+Parameters: 
+  inputOfSubnet: # Nombre del parametro, para AWS es su logical name o id. 
+    Type: String # Este es el único elemento requerido para la creación de parametros.
+    Default: SubnetReferenceOfVpc
+    
+  InstanceTypeParameter: # Nombre del parametro, para AWS es su logical name o id. 
+    Type: String # Este es el único elemento requerido para la creación de parametros.
+    Default: t2.micro
+    AllowedValues: 
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Los parametros permitidos son t2.micro, m1.small, m1.large. Por defecto se usa t2.micro.
+     
+Resources: 
+ Ec2Instance:
+  Type: AWS::EC2::Instance
+  Properties:
+    SubnetId:
+      Fn::ImportValue:
+        Fn::Sub: "${inputOfSubnet}-VpcId"
+    InstanceType:
+      Ref: InstanceTypeParameter
+    ImageId: ami-0fc61db8544a617ed
